@@ -6,7 +6,7 @@ import math
 
 IMAGE_NAME = "image.jpg"
 COLOR_COUNT = 7
-BLOCK_GAP = .1  # percent
+BLOCK_GAP = .2  # percent
 FONT_NAME = "JetBrainsMono.ttf"
 DIR = os.getcwd()
 IMAGE_PATH = os.path.join(DIR, IMAGE_NAME)
@@ -48,21 +48,37 @@ def make_block(color: RGB, size: tuple[int, int]) -> Image.Image:
 
 
 def add_blocks(image: Image.Image, blocks: list[Image.Image]):
-    w, h = image.size
-    l = len(blocks)
-    for i, block in enumerate(blocks):
-        # Horizontal align
-        w_ = int((w - (block.width * l)) / 2 + block.width * i)
-        # Vertical align
-        h_ = int((h - block.height) / 2)
+    image_w, image_h = image.size
 
-        image.paste(block, (w_, h_))
+    blocks_len = sum(block.width for block in blocks)
+    prev_block_width = 0
+    prev_w = int((image_w - blocks_len) / 2)
+    for block in blocks:
+        w = prev_w + prev_block_width
+        prev_block_width = block.width
+        prev_w = w
+
+        h = int((image_h - block.height) / 2)
+
+        image.paste(block, (w, h))
+
+
+def add_gaps(blocks: list[Image.Image]) -> list[Image.Image]:
+    w = blocks[0].width
+    gap = Image.new('RGBA', (int(w*BLOCK_GAP), 0), (0, 0, 0, 0))
+    gap.putalpha(0)
+    new = []
+    for block in blocks:
+        new.append(block)
+        new.append(gap)
+    return new[:-1]
 
 
 with Image.open(IMAGE_PATH) as im:
     palette = get_palette(IMAGE_PATH, COLOR_COUNT)
     block_size = make_block_size(im.size)
     blocks = [make_block(color, block_size) for color in palette]
+    blocks = add_gaps(blocks)
     new_image = im.copy()
     enhancer = ImageEnhance.Brightness(new_image)
     new_image = enhancer.enhance(0.8)
