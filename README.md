@@ -18,6 +18,10 @@ Required dependencies
 git clone https://github.com/metafates/ImagePalette.git
 cd ImagePalette
 pipenv shell
+```
+
+To install dependencies run
+```bash
 pipenv install
 ```
 
