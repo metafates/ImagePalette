@@ -1,7 +1,7 @@
 import argparse
 
 parser = argparse.ArgumentParser(
-    prog='waller',
+    prog='palette',
     description="Generates color palette from image"
 )
 
