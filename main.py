@@ -4,9 +4,9 @@ from PIL import Image, ImageDraw, ImageFont, ImageEnhance, ImageFilter
 import os
 import math
 
-IMAGE_NAME = "img2"
-IMAGE_EXTENSION = "png"
-COLOR_COUNT = 7
+IMAGE_NAME = "img"
+IMAGE_EXTENSION = "jpg"
+COLOR_COUNT = 7  # minimum 2
 BLOCK_GAP = .2  # %
 BLUR = .01  # %
 FONT_NAME = "JetBrainsMono.ttf"
@@ -37,7 +37,6 @@ def make_block_size(img_size: tuple[int, int]) -> tuple[int, int]:
 
 def add_center_text(image: Image.Image, text: str):
     w, h = image.size
-    # TODO: adapt font size automatically
     font = ImageFont.truetype(FONT_PATH, int(w * .15))
     draw = ImageDraw.Draw(image)
     draw.text((w/2, h/2), text, font=font, anchor='mm')
@@ -49,6 +48,7 @@ def make_block(color: RGB, size: tuple[int, int]) -> Image.Image:
     return block
 
 
+# TODO: add shadows
 def add_blocks(image: Image.Image, blocks: list[Image.Image]):
     image_w, image_h = image.size
 
