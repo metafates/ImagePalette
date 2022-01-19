@@ -33,6 +33,9 @@ def get_palette(image_path: str, count: int) -> list[RGB]:
 
 
 def rgb_to_hex(rgb: RGB) -> HEX:
+    '''
+    Convert RGB tuple to HEX string
+    '''
     return '#%02x%02x%02x' % rgb
 
 
