@@ -1,15 +1,17 @@
 from xml.etree.ElementTree import PI
 from colorthief import ColorThief
-from PIL import Image, ImageDraw, ImageFont, ImageEnhance
+from PIL import Image, ImageDraw, ImageFont, ImageEnhance, ImageFilter
 import os
 import math
 
-IMAGE_NAME = "image.jpg"
+IMAGE_NAME = "img2"
+IMAGE_EXTENSION = "png"
 COLOR_COUNT = 7
-BLOCK_GAP = .2  # percent
+BLOCK_GAP = .2  # %
+BLUR = .01  # %
 FONT_NAME = "JetBrainsMono.ttf"
 DIR = os.getcwd()
-IMAGE_PATH = os.path.join(DIR, IMAGE_NAME)
+IMAGE_PATH = os.path.join(DIR, IMAGE_NAME + '.' + IMAGE_EXTENSION)
 FONT_PATH = os.path.join(os.path.join(DIR, 'fonts'), FONT_NAME)
 
 RGB = tuple[int, int, int]
@@ -36,7 +38,7 @@ def make_block_size(img_size: tuple[int, int]) -> tuple[int, int]:
 def add_center_text(image: Image.Image, text: str):
     w, h = image.size
     # TODO: adapt font size automatically
-    font = ImageFont.truetype(FONT_PATH, 60)
+    font = ImageFont.truetype(FONT_PATH, int(w * .15))
     draw = ImageDraw.Draw(image)
     draw.text((w/2, h/2), text, font=font, anchor='mm')
 
@@ -81,6 +83,8 @@ with Image.open(IMAGE_PATH) as im:
     blocks = add_gaps(blocks)
     new_image = im.copy()
     enhancer = ImageEnhance.Brightness(new_image)
-    new_image = enhancer.enhance(0.8)
+    new_image = enhancer.enhance(.9)
+    new_image = new_image.filter(
+        ImageFilter.BoxBlur(min(new_image.size) * BLUR))
     add_blocks(new_image, blocks)
-    new_image.save("new.jpg")
+    new_image.save(f'{IMAGE_NAME}-palette.{IMAGE_EXTENSION}')
