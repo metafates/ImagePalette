@@ -7,6 +7,8 @@ Generates a color palette from the image.
 ![original](examples/original.jpg 'Original')
 ![generated](examples/palette.jpg 'Generated')
 
+[Artist](https://www.artstation.com/guweiz)
+
 ## Usage
 
 Required dependencies
