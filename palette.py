@@ -12,7 +12,7 @@ IMAGE_NAME = ''.join(IMAGE_FULLNAME.split('.')[:-1])
 IMAGE_EXTENSION = IMAGE_FULLNAME.split('.')[-1]
 COLOR_COUNT = args.colors
 BLOCK_GAP = .2  # %
-BLUR = .01  # %
+BLUR = .004
 FONT_NAME = "JetBrainsMono.ttf"
 DIR = os.getcwd()
 IMAGE_PATH = os.path.join(DIR, IMAGE_FULLNAME)
@@ -103,18 +103,28 @@ def add_gaps(blocks: list[Image.Image]) -> list[Image.Image]:
 
 
 def main():
+    print("Opening image...")
     with Image.open(IMAGE_PATH) as im:
+        print("Getting color palette...")
         palette = get_palette(IMAGE_PATH, COLOR_COUNT)[:COLOR_COUNT]
         block_size = calculate_block_size(im.size)
         blocks = [make_block(color, block_size) for color in palette]
         blocks = add_gaps(blocks)
         new_image = im.copy()
+        print("Applying filters...")
         enhancer = ImageEnhance.Brightness(new_image)
         new_image = enhancer.enhance(.9)
         new_image = new_image.filter(
-            ImageFilter.BoxBlur(min(new_image.size) * BLUR))
+            ImageFilter.GaussianBlur(min(new_image.size) * BLUR))
         add_blocks(new_image, blocks)
-        new_image.save(f'{IMAGE_NAME}-palette.{IMAGE_EXTENSION}')
+        print("Saving...")
+        new_image_name = f'{IMAGE_NAME}-palette.{IMAGE_EXTENSION}'
+        new_image.save(
+            new_image_name,
+            quality=100,  # preserve original quality
+            subsampling=0
+        )
+        print(f"Done! Image saved as '{new_image_name}'")
 
 
 if __name__ == "__main__":
