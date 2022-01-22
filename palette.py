@@ -6,18 +6,23 @@ from argsparser import parser
 
 args = parser.parse_args()
 
+DEBUG = True
+
 IMAGE_FULLNAME = args.image
 
 IMAGE_NAME = ''.join(IMAGE_FULLNAME.split('.')[:-1])
 IMAGE_EXTENSION = IMAGE_FULLNAME.split('.')[-1]
 COLOR_COUNT = args.colors
-BLOCK_GAP = .2  # %
+BLOCK_GAP = .2
+BLOCK_HEIGHT = .3
+BLOCK_WIDTH = .07
 BLUR = 0 if args.no_blur else .004
 FONT_NAME = "RobotoMono.ttf"
 DIR = os.getcwd()
 IMAGE_PATH = os.path.join(DIR, IMAGE_FULLNAME)
 FONT_PATH = os.path.join(os.path.join(os.path.dirname(
     os.path.realpath(__file__)), 'fonts'), FONT_NAME)
+FONT_SIZE = 0.12
 
 RGB = tuple[int, int, int]
 HEX = str
@@ -44,8 +49,8 @@ def calculate_block_size(img_size: tuple[int, int]) -> tuple[int, int]:
     Calculate blocks width and height based on image size
     '''
     w, h = img_size
-    block_h = h * .4
-    block_w = w * .1
+    block_h = h * BLOCK_HEIGHT
+    block_w = w * BLOCK_WIDTH
     return math.ceil(block_w), math.ceil(block_h)
 
 
@@ -54,7 +59,7 @@ def add_center_text(image: Image.Image, text: str):
     Add text to the image and align it
     '''
     w, h = image.size
-    font = ImageFont.truetype(FONT_PATH, int(w * .15))
+    font = ImageFont.truetype(FONT_PATH, int(w * FONT_SIZE))
     draw = ImageDraw.Draw(image)
     draw.text((w/2, h/2), text, font=font, anchor='mm')
 
@@ -102,29 +107,34 @@ def add_gaps(blocks: list[Image.Image]) -> list[Image.Image]:
     return new[:-1]
 
 
+def log(text: str) -> None:
+    if DEBUG:
+        print(text)
+
+
 def main():
-    print("Opening image...")
+    log("Opening image...")
     with Image.open(IMAGE_PATH) as im:
-        print("Getting color palette...")
+        log("Getting color palette...")
         palette = get_palette(IMAGE_PATH, COLOR_COUNT)[:COLOR_COUNT]
         block_size = calculate_block_size(im.size)
         blocks = [make_block(color, block_size) for color in palette]
         blocks = add_gaps(blocks)
         new_image = im.copy()
-        print("Applying filters...")
+        log("Applying filters...")
         enhancer = ImageEnhance.Brightness(new_image)
         new_image = enhancer.enhance(.9)
         new_image = new_image.filter(
             ImageFilter.GaussianBlur(min(new_image.size) * BLUR))
         add_blocks(new_image, blocks)
-        print("Saving...")
+        log("Saving...")
         new_image_name = f'{IMAGE_NAME}-palette.{IMAGE_EXTENSION}'
         new_image.save(
             new_image_name,
             quality=100,  # preserve original quality
             subsampling=0
         )
-        print(f"Done! Image saved as '{new_image_name}'")
+        log(f"Done! Image saved as '{new_image_name}'")
 
 
 if __name__ == "__main__":
