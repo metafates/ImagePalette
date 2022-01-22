@@ -17,3 +17,9 @@ parser.add_argument(
     type=int,
     default=7
 )
+
+parser.add_argument(
+    '--no-blur',
+    help='do not apply blur to the image',
+    action='store_true'
+)

@@ -13,17 +13,17 @@ Generates a color palette from the image.
 
 Required dependencies
 
-- Pillow
-- ColorThief
+-   Pillow
+-   ColorThief
 
-`python palette.py <image> [--colors COLORS]`
+`python palette.py <image> [--colors COLORS] [--no-blur]`
 
 ### TODO
 
-- [ ]  Add vertical mode (for images with *Height* > *Width*)
+-   [ ] Add vertical mode (for images with _Height_ > _Width_)
 
-- [ ]  Add shadows to the color blocks *(optional)*
+-   [ ] Add shadows to the color blocks _(optional)_
 
-- [ ]  Make script executable, rather than calling `python palette.py` each time
+-   [ ] Make script executable, rather than calling `python palette.py` each time
 
-- [ ]  Add blur radius as argument
+-   [ ] Add blur radius as argument
