@@ -13,7 +13,7 @@ IMAGE_EXTENSION = IMAGE_FULLNAME.split('.')[-1]
 COLOR_COUNT = args.colors
 BLOCK_GAP = .2  # %
 BLUR = .004
-FONT_NAME = "JetBrainsMono.ttf"
+FONT_NAME = "RobotoMono.ttf"
 DIR = os.getcwd()
 IMAGE_PATH = os.path.join(DIR, IMAGE_FULLNAME)
 FONT_PATH = os.path.join(os.path.join(os.path.dirname(
@@ -64,7 +64,7 @@ def make_block(color: RGB, size: tuple[int, int]) -> Image.Image:
     Make a color block
     '''
     block = Image.new(mode="RGB", size=size, color=color)
-    add_center_text(block, rgb_to_hex(color))
+    add_center_text(block, rgb_to_hex(color).upper())
     return block
 
 
